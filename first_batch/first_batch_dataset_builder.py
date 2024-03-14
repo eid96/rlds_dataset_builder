@@ -7,12 +7,12 @@ import tensorflow_datasets as tfds
 import tensorflow_hub as hub
 
 
-class ExampleDataset(tfds.core.GeneratorBasedBuilder):
+class Go_To_Chair(tfds.core.GeneratorBasedBuilder):
     """DatasetBuilder for example dataset."""
 
-    VERSION = tfds.core.Version('1.0.0')
+    VERSION = tfds.core.Version('1.0.1')
     RELEASE_NOTES = {
-      '1.0.0': 'Initial release.',
+      '1.0.1': 'Expanding dataset with new language instructions and actions.',
     }
 
     def __init__(self, *args, **kwargs):
@@ -28,27 +28,20 @@ class ExampleDataset(tfds.core.GeneratorBasedBuilder):
                         'image': tfds.features.Image(
                             shape=(64, 64, 3),
                             dtype=np.uint8,
-                            encoding_format='png',
+                            encoding_format='jpeg',
                             doc='Main camera RGB observation.',
                         ),
-                        'wrist_image': tfds.features.Image(
-                            shape=(64, 64, 3),
-                            dtype=np.uint8,
-                            encoding_format='png',
-                            doc='Wrist camera RGB observation.',
-                        ),
+                      
                         'state': tfds.features.Tensor(
                             shape=(10,),
                             dtype=np.float32,
-                            doc='Robot state, consists of [7x robot joint angles, '
-                                '2x gripper position, 1x door opening angle].',
+                            doc='Robot state for Segway Loomo, consists of movement in X direction and rotation',
                         )
                     }),
                     'action': tfds.features.Tensor(
                         shape=(10,),
                         dtype=np.float32,
-                        doc='Robot action, consists of [7x joint velocities, '
-                            '2x gripper velocities, 1x terminate episode].',
+                        doc='Robot action for Segway Loomo, consists of movement in X direction and rotation.',
                     ),
                     'discount': tfds.features.Scalar(
                         dtype=np.float32,
@@ -71,7 +64,7 @@ class ExampleDataset(tfds.core.GeneratorBasedBuilder):
                         doc='True on last step of the episode if it is a terminal step, True for demos.'
                     ),
                     'language_instruction': tfds.features.Text(
-                        doc='Language Instruction.'
+                        doc='Move to chair'
                     ),
                     'language_embedding': tfds.features.Tensor(
                         shape=(512,),
@@ -82,7 +75,7 @@ class ExampleDataset(tfds.core.GeneratorBasedBuilder):
                 }),
                 'episode_metadata': tfds.features.FeaturesDict({
                     'file_path': tfds.features.Text(
-                        doc='Path to the original data file.'
+                        doc='/home/morteneid/tensorflow_datasets/dataset/1.0.1/'
                     ),
                 }),
             }))
@@ -90,8 +83,9 @@ class ExampleDataset(tfds.core.GeneratorBasedBuilder):
     def _split_generators(self, dl_manager: tfds.download.DownloadManager):
         """Define data splits."""
         return {
-            'train': self._generate_examples(path='data/train/episode_*.npy'),
-            'val': self._generate_examples(path='data/val/episode_*.npy'),
+            #update based on version of dataset
+            'train': self._generate_examples(path='/home/morteneid/tensorflow_datasets/dataset/1.0.1/data/train/episode_*.npy'),
+            #'val': self._generate_examples(path='data/val/episode_*.npy'),
         }
 
     def _generate_examples(self, path) -> Iterator[Tuple[str, Any]]:
@@ -110,7 +104,6 @@ class ExampleDataset(tfds.core.GeneratorBasedBuilder):
                 episode.append({
                     'observation': {
                         'image': step['image'],
-                        'wrist_image': step['wrist_image'],
                         'state': step['state'],
                     },
                     'action': step['action'],
@@ -141,10 +134,5 @@ class ExampleDataset(tfds.core.GeneratorBasedBuilder):
         for sample in episode_paths:
             yield _parse_example(sample)
 
-        # for large datasets use beam to parallelize data parsing (this will have initialization overhead)
-        # beam = tfds.core.lazy_imports.apache_beam
-        # return (
-        #         beam.Create(episode_paths)
-        #         | beam.Map(_parse_example)
-        # )
+   
 

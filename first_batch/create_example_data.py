@@ -16,20 +16,20 @@ def create_fake_episode(path):
             'wrist_image': np.asarray(np.random.rand(64, 64, 3) * 255, dtype=np.uint8),
             'state': np.asarray(np.random.rand(10), dtype=np.float32),
             'action': np.asarray(np.random.rand(10), dtype=np.float32),
-            'language_instruction': 'dummy instruction',
+            'language_instruction': 'Move to chair',
         })
     np.save(path, episode)
 
 
 # create fake episodes for train and validation
 print("Generating train examples...")
-os.makedirs('data/train', exist_ok=True)
+os.makedirs('/home/morteneid/tensorflow_datasets/dataset/1.0.1/data/train', exist_ok=True)
 for i in tqdm.tqdm(range(N_TRAIN_EPISODES)):
-    create_fake_episode(f'data/train/episode_{i}.npy')
+    create_fake_episode(f'/home/morteneid/tensorflow_datasets/dataset/1.0.1/data/train/episode_{i}.npy')
 
 print("Generating val examples...")
-os.makedirs('data/val', exist_ok=True)
-for i in tqdm.tqdm(range(N_VAL_EPISODES)):
-    create_fake_episode(f'data/val/episode_{i}.npy')
+os.makedirs('/home/morteneid/tensorflow_datasets/dataset/1.0.0/data/val', exist_ok=True)
+#for i in tqdm.tqdm(range(N_VAL_EPISODES)):
+#    create_fake_episode(f'data/val/episode_{i}.npy')
 
 print('Successfully created example data!')
