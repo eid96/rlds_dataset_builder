@@ -84,7 +84,7 @@ class Go_To_Chair(tfds.core.GeneratorBasedBuilder):
         """Define data splits."""
         return {
             #update based on version of dataset
-            'train': self._generate_examples(path='/home/morteneid/tensorflow_datasets/dataset/1.0.1/data/train/episode_*.npy'),
+            'train': self._generate_examples(path='path/1.0.1/data/train/episode_*.npy'),
             #'val': self._generate_examples(path='data/val/episode_*.npy'),
         }
 
