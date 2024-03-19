@@ -75,7 +75,7 @@ class Go_To_Chair(tfds.core.GeneratorBasedBuilder):
                 }),
                 'episode_metadata': tfds.features.FeaturesDict({
                     'file_path': tfds.features.Text(
-                        doc='/home/morteneid/tensorflow_datasets/dataset/1.0.1/'
+                        doc='/path/dataset/1.0.1/'
                     ),
                 }),
             }))
